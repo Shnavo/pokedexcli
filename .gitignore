@@ -1,3 +1,6 @@
+repl.log
+pokedexcli
+
 # Binaries for programs and plugins
 *.exe
 *.exe~
@@ -5,7 +8,6 @@
 *.so
 *.so.*
 *.dylib
-*.log
 
 # Test binary, built with `go test -c`
 *.test

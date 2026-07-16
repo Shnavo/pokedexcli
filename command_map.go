@@ -1,33 +1,42 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"encoding/json"
-	"io"
-	"net/http"
 )
 
-func commandMap() error {
-	res, err := http.Get(config.Next)
+func commandMap(cfg *config) error {
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
 	if err != nil {
-		fmt.Println("Error fetching data:", err)
-	}
-	defer res.Body.Close()
-
-
-	body, err := io.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println("Error reading response body:", err)
+		return err
 	}
 
-	err = json.Unmarshal(body, &config)
-	if err != nil {
-		fmt.Println("Error reading response body:", err)
-	}
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.prevLocationsURL = locationsResp.Previous
 
-	for _, result := range config.Results {
+	for _, result := range locationsResp.Results {
 		fmt.Println(result.Name)
 	}
-	
+
+	return nil
+}
+
+func commandMapBack(cfg *config) error {
+	if cfg.prevLocationsURL == nil {
+		return errors.New("You're on the first page")
+	}
+
+	locationsResp, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = locationsResp.Next
+	cfg.prevLocationsURL = locationsResp.Previous
+
+	for _, result := range locationsResp.Results {
+		fmt.Println(result.Name)
+	}
+
 	return nil
 }
