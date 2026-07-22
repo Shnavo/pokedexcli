@@ -10,8 +10,8 @@ import (
 )
 
 type config struct {
-	pokeapiClient        pokeapi.Client
-	nextLocationsURL     *string
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
 	prevLocationsURL *string
 }
 
